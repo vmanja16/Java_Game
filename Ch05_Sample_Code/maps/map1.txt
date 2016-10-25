@@ -8,13 +8,5 @@
 #   *       Goal
 #   1       Bad Guy 1 (grub)
 #   2       Bad Guy 2 (fly)
-                                                                 
-                                                           o     o
-                                                     o      o    o
-                       o o o        o o o       o     o      o 
-                      IIIIIII      IIIIIII       o     o         2
-                                                  o        2
-                                  2                 2EF
-                 EF                                 EGD
-        EF  1    CD       1           1            EGAD     *
-BBBBBBBBGHBBBBBBBGHBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBGAAHBBBBBBBBBBB
+          1           1           1                 *
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
