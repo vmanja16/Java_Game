@@ -158,9 +158,6 @@ public class ResourceManager {
                 }
 
                 // check if the char represents a sprite
-                else if (ch == 'o') {
-                    addSprite(newMap, coinSprite, x, y);
-                }
                 else if (ch == '!') {
                     addSprite(newMap, musicSprite, x, y);
                 }
@@ -169,9 +166,6 @@ public class ResourceManager {
                 }
                 else if (ch == '1') {
                     addSprite(newMap, grubSprite, x, y);
-                }
-                else if (ch == '2') {
-                    addSprite(newMap, flySprite, x, y);
                 }
             }
         }
