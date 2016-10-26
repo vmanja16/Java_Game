@@ -172,7 +172,7 @@ public class ResourceManager {
 
         // add the player to the map
         Sprite player = (Sprite)playerSprite.clone();
-        player.setX(TileMapRenderer.tilesToPixels(3));
+        player.setX(TileMapRenderer.tilesToPixels(0));
         player.setY(0);
         newMap.setPlayer(player);
 

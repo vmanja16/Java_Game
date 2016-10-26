@@ -31,6 +31,8 @@ public class GameManager extends GameCore {
 
     public static final float GRAVITY = 0.002f;
 
+	public static final float ONE_SECOND = 1000;
+
     private Point pointCache = new Point();
     private TileMap map;
     private MidiPlayer midiPlayer;
@@ -104,7 +106,7 @@ public class GameManager extends GameCore {
 
         inputManager.mapToKey(moveLeft, KeyEvent.VK_LEFT);
         inputManager.mapToKey(moveRight, KeyEvent.VK_RIGHT);
-        inputManager.mapToKey(jump, KeyEvent.VK_SPACE);
+        inputManager.mapToKey(jump, KeyEvent.VK_UP);
         inputManager.mapToKey(exit, KeyEvent.VK_ESCAPE);
     }
 
@@ -275,7 +277,7 @@ public class GameManager extends GameCore {
         // update player
         updateCreature(player, elapsedTime);
         player.update(elapsedTime);
-
+		updateHealth(elapsedTime);
         // update other sprites
         Iterator i = map.getSprites();
         while (i.hasNext()) {
@@ -292,6 +294,36 @@ public class GameManager extends GameCore {
             // normal update
             sprite.update(elapsedTime);
         }
+    }
+
+   /**
+	   Updates the health
+   */
+    private void updateHealth(long elapsedTime){
+        Player player = (Player)(map.getPlayer());
+	    
+		if (player.isAlive()){
+	        float pos_diff = player.getX()-player.old_pos;
+			// update stall_time
+			if (pos_diff != 0){player.stall_time = 0;}
+            else{player.stall_time += elapsedTime;}
+			// update position
+			if ( (pos_diff > 50) || (pos_diff < -50)){
+			   player.old_pos = player.getX();
+                if (player.isAlive()){
+                    if (map.getHealth().intValue() < 40){
+                        map.setHealth(map.getHealth().intValue() + 1);
+                    }
+                }
+            }
+			// standing still for a full minute
+			else if (player.stall_time > ONE_SECOND){
+			    player.stall_time = 0;
+                if(map.getHealth() > 35){map.setHealth(40);}
+				else{map.setHealth(map.getHealth()+5);}
+			}
+        }
+		else{map.setHealth(0);}// Player dead!
     }
 
 
@@ -384,6 +416,7 @@ public class GameManager extends GameCore {
         else if (collisionSprite instanceof Creature) {
         	// player dies!
         	player.setState(Creature.STATE_DYING);
+			updateHealth(0);
         }
     }
 

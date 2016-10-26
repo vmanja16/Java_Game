@@ -11,10 +11,17 @@ public class Player extends Creature {
 
     private boolean onGround;
 
+    public float old_pos;
+
+	public float stall_time;
+	
+ 
     public Player(Animation left, Animation right,
         Animation deadLeft, Animation deadRight)
     {
         super(left, right, deadLeft, deadRight);
+		old_pos = getX();
+		stall_time = 0;
     }
 
 
