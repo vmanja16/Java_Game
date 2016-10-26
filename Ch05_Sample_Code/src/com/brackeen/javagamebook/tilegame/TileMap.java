@@ -17,6 +17,8 @@ public class TileMap {
     private Image[][] tiles;
     private LinkedList sprites;
     private Sprite player;
+	private Integer health;
+	private Integer score;
 
     /**
         Creates a new TileMap with the specified width and
@@ -25,7 +27,37 @@ public class TileMap {
     public TileMap(int width, int height) {
         tiles = new Image[width][height];
         sprites = new LinkedList();
-    }
+	    health = new Integer(20); // Health starts at 20
+        score = new Integer(0); // Score starts at 0
+	}
+
+	/**
+	   Gets the current health Integer of the player
+    */
+    public Integer getHealth() {
+		return health;
+	}
+
+	/**
+	   Sets the current health Integer to the specified int value
+	*/
+    public void setHealth(int value) {
+		health = new Integer(value);
+	}
+
+    /**
+	   Gets the current score Integer of the player
+    */
+	public Integer getScore() {
+        return score; 
+	}
+
+	/**
+	   Sets the current score Integer to the specified int value
+	*/
+	public void setScore(int value){
+        score = new Integer(value);    
+	}
 
 
     /**

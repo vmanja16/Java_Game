@@ -120,9 +120,12 @@ public class GameManager extends GameCore {
             float velocityX = 0;
             if (moveLeft.isPressed()) {
                 velocityX-=player.getMaxSpeed();
+			//	map.setHealth(map.getHealth()+1);
+
             }
             if (moveRight.isPressed()) {
                 velocityX+=player.getMaxSpeed();
+			//	map.setHealth(map.getHealth()+1);
             }
             if (jump.isPressed()) {
                 player.jump(false);

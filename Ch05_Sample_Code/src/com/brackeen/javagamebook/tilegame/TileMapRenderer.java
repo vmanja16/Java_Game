@@ -132,7 +132,9 @@ public class TileMapRenderer {
             Math.round(player.getY()) + offsetY,
             null);
 
-		g.drawString("Health", 20, 50);	
+        // draw HEALTH and SCORE
+		g.drawString("Health: " + map.getHealth().toString(), 20, 50);	
+        g.drawString("Score: " + map.getScore().toString(), 600, 50);
 
         // draw sprites
         Iterator i = map.getSprites();
