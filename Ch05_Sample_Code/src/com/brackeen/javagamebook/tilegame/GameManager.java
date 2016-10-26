@@ -47,7 +47,7 @@ public class GameManager extends GameCore {
     private GameAction moveRight;
     private GameAction jump;
     private GameAction exit;
-
+    private GameAction shoot;
 
     public void init() {
         super.init();
@@ -99,6 +99,7 @@ public class GameManager extends GameCore {
             GameAction.DETECT_INITAL_PRESS_ONLY);
         exit = new GameAction("exit",
             GameAction.DETECT_INITAL_PRESS_ONLY);
+		shoot = new GameAction("shoot");
 
         inputManager = new InputManager(
             screen.getFullScreenWindow());
@@ -108,7 +109,8 @@ public class GameManager extends GameCore {
         inputManager.mapToKey(moveRight, KeyEvent.VK_RIGHT);
         inputManager.mapToKey(jump, KeyEvent.VK_UP);
         inputManager.mapToKey(exit, KeyEvent.VK_ESCAPE);
-    }
+        inputManager.mapToKey(shoot, KeyEvent.VK_S);
+	}
 
 
     private void checkInput(long elapsedTime) {
@@ -303,20 +305,20 @@ public class GameManager extends GameCore {
         Player player = (Player)(map.getPlayer());
 	    
 		if (player.isAlive()){
-	        float pos_diff = player.getX()-player.old_pos;
+            float x_pos = player.getX();
+	        float pos_diff = x_pos-player.ref_pos;
 			// update stall_time
-			if (pos_diff != 0){player.stall_time = 0;}
-            else{player.stall_time += elapsedTime;}
+			if(player.old_pos == x_pos){player.stall_time += elapsedTime;}
+            else{player.stall_time = 0;}
+            player.old_pos = x_pos;
 			// update position
 			if ( (pos_diff > 50) || (pos_diff < -50)){
-			   player.old_pos = player.getX();
-                if (player.isAlive()){
-                    if (map.getHealth().intValue() < 40){
-                        map.setHealth(map.getHealth().intValue() + 1);
-                    }
+			   player.ref_pos = x_pos;
+                if (map.getHealth().intValue() < 40){
+                    map.setHealth(map.getHealth().intValue() + 1);
                 }
             }
-			// standing still for a full minute
+			// standing still for a full second
 			else if (player.stall_time > ONE_SECOND){
 			    player.stall_time = 0;
                 if(map.getHealth() > 35){map.setHealth(40);}

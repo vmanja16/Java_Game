@@ -11,6 +11,8 @@ public class Player extends Creature {
 
     private boolean onGround;
 
+    public float ref_pos;
+
     public float old_pos;
 
 	public float stall_time;
@@ -21,6 +23,7 @@ public class Player extends Creature {
     {
         super(left, right, deadLeft, deadRight);
 		old_pos = getX();
+        ref_pos = getX();
 		stall_time = 0;
     }
 
