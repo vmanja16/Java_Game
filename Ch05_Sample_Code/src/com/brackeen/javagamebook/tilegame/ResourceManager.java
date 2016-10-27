@@ -28,6 +28,7 @@ public class ResourceManager {
     private Sprite goalSprite;
     private Sprite grubSprite;
     private Sprite flySprite;
+    private Sprite grubBulletSprite;
 
     /**
         Creates a new ResourceManager with the specified
@@ -240,6 +241,7 @@ public class ResourceManager {
             loadImage("fly3.png"),
             loadImage("grub1.png"),
             loadImage("grub2.png"),
+            loadImage("grub_bullet.png"),
         };
 
         images[1] = new Image[images[0].length];
@@ -258,6 +260,7 @@ public class ResourceManager {
         Animation[] playerAnim = new Animation[4];
         Animation[] flyAnim = new Animation[4];
         Animation[] grubAnim = new Animation[4];
+        Animation[] grubBulletAnim = new Animation[4];
         for (int i=0; i<4; i++) {
             playerAnim[i] = createPlayerAnim(
                 images[i][0], images[i][1], images[i][2]);
@@ -265,6 +268,8 @@ public class ResourceManager {
                 images[i][3], images[i][4], images[i][5]);
             grubAnim[i] = createGrubAnim(
                 images[i][6], images[i][7]);
+            grubBulletAnim[i] = createGrubBulletAnim(
+                images[i][8], images[i][8]);
         }
 
         // create creature sprites
@@ -274,6 +279,9 @@ public class ResourceManager {
             flyAnim[2], flyAnim[3]);
         grubSprite = new Grub(grubAnim[0], grubAnim[1],
             grubAnim[2], grubAnim[3]);
+        grubBulletSprite = new GrubBullet(grubBulletAnim[0],
+            grubBulletAnim[1], grubBulletAnim[2], 
+            grubBulletAnim[3]);
     }
 
 
@@ -304,6 +312,13 @@ public class ResourceManager {
 
 
     private Animation createGrubAnim(Image img1, Image img2) {
+        Animation anim = new Animation();
+        anim.addFrame(img1, 250);
+        anim.addFrame(img2, 250);
+        return anim;
+    }
+
+    private Animation createGrubBulletAnim(Image img1, Image img2) {
         Animation anim = new Animation();
         anim.addFrame(img1, 250);
         anim.addFrame(img2, 250);

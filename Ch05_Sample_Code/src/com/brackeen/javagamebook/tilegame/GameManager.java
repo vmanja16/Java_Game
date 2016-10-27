@@ -17,6 +17,9 @@ import com.brackeen.javagamebook.tilegame.sprites.*;
 /**
     GameManager manages all parts of the game.
 */
+
+// TODO: Make a class for creature bullets
+    //If in same frame: shoot after a second 
 public class GameManager extends GameCore {
 
     public static void main(String[] args) {
@@ -291,13 +294,25 @@ public class GameManager extends GameCore {
                 }
                 else {
                     updateCreature(creature, elapsedTime);
+                    if (creature instanceof Grub){
+                        makeGrubBullet(creature);
+                    }
                 }
             }
             // normal update
             sprite.update(elapsedTime);
         }
     }
-
+   /**
+       Make GrubBullet if applicable
+   */
+    private void makeGrubBullet(Creature creature){
+        Player player = (Player) map.getPlayer();
+        Grub grub = (Grub) creature;
+        if (grub.isOnScreen() && (grub.wait_time > ONE_SECOND/2)){
+            // Create a grubBullet!
+        } 
+    }
    /**
 	   Updates the health
    */
@@ -306,13 +321,13 @@ public class GameManager extends GameCore {
 	    
 		if (player.isAlive()){
             float x_pos = player.getX();
-	        float pos_diff = x_pos-player.ref_pos;
+	        float pos_diff = Math.abs(x_pos-player.ref_pos);
 			// update stall_time
 			if(player.old_pos == x_pos){player.stall_time += elapsedTime;}
             else{player.stall_time = 0;}
             player.old_pos = x_pos;
 			// update position
-			if ( (pos_diff > 50) || (pos_diff < -50)){
+			if (pos_diff > 50) {
 			   player.ref_pos = x_pos;
                 if (map.getHealth().intValue() < 40){
                     map.setHealth(map.getHealth().intValue() + 1);
@@ -327,7 +342,6 @@ public class GameManager extends GameCore {
         }
 		else{map.setHealth(0);}// Player dead!
     }
-
 
     /**
         Updates the creature, applying gravity for creatures that

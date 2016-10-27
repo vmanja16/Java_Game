@@ -7,12 +7,27 @@ import com.brackeen.javagamebook.graphics.Animation;
 */
 public class Grub extends Creature {
 
+    private boolean on_screen;
+
+    public float shot_time;
+
+  	public float wait_time;
+
     public Grub(Animation left, Animation right,
         Animation deadLeft, Animation deadRight)
     {
         super(left, right, deadLeft, deadRight);
+        on_screen = false;
+        wait_time = 0;
     }
 
+
+
+    public boolean isOnScreen(){return on_screen;}
+
+    public void setOnScreen(boolean value){
+    	on_screen = value;
+    }
 
     public float getMaxSpeed() {
         return 0.05f;
