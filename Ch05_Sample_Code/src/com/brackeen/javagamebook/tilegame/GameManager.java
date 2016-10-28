@@ -38,6 +38,8 @@ public class GameManager extends GameCore {
 
     public static final float GRUB_SHOOTING_PERIOD = 3000;
 
+    public static final float MOVEMENT_UNIT = 50;
+
     public static final long COLLISION_LONG = -1;
     private Point pointCache = new Point();
     private TileMap map;
@@ -130,12 +132,9 @@ public class GameManager extends GameCore {
             float velocityX = 0;
             if (moveLeft.isPressed()) {
                 velocityX-=player.getMaxSpeed();
-			//	map.setHealth(map.getHealth()+1);
-
             }
             if (moveRight.isPressed()) {
                 velocityX+=player.getMaxSpeed();
-			//	map.setHealth(map.getHealth()+1);
             }
             if (jump.isPressed()) {
                 player.jump(false);
@@ -341,8 +340,9 @@ public class GameManager extends GameCore {
         if (facing_left||facing_right){grub.wait_time += elapsedTime;}
         else{grub.wait_time = 0;}
         
-        
+        // set first_shot
         grub.first_shot = grub.allow_shooting;
+        // 
         if ( (grub.wait_time > ONE_SECOND/2)){
             map.setScore(map.getScore()+1); 
             grub.allow_shooting = true;
@@ -353,7 +353,9 @@ public class GameManager extends GameCore {
             grub.shooting_time += elapsedTime;
             if ((grub.shooting_time > GRUB_SHOOTING_PERIOD) || (!grub.first_shot)){
                 bullet = (GrubBullet)resourceManager.grubBulletSprite.clone();
-                bullet.setX(grub_pos-50); bullet.setY(grub.getY());
+                if(facing_left){bullet.setX(grub_pos-MOVEMENT_UNIT);}
+                if(facing_right){bullet.setX(grub_pos+MOVEMENT_UNIT); bullet.flipMaxSpeed();}
+                bullet.setY(grub.getY());
                 grub.shooting_time = 0;
             }
         }
@@ -378,7 +380,7 @@ public class GameManager extends GameCore {
             else{player.stall_time = 0;}
             player.old_pos = x_pos;
 			// update position
-			if (pos_diff > 50) {
+			if (pos_diff > MOVEMENT_UNIT) {
 			   player.ref_pos = x_pos;
                 if (map.getHealth().intValue() < 40){
                     map.setHealth(map.getHealth().intValue() + 1);

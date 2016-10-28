@@ -7,15 +7,17 @@ import com.brackeen.javagamebook.graphics.Animation;
 */
 public class Grub extends Creature {
 
-    private boolean on_screen;
+    private boolean on_screen; // Are we on the screen?
 
-    public boolean allow_shooting;
+    public boolean allow_shooting; // Can we shoot?
 
-    public float shooting_time;
+    public float shooting_time; // time since last shot
 
-  	public float wait_time;
+  	public float wait_time; // Time we have waited since facing player on screen
 
-    public boolean first_shot;
+    public boolean first_shot; // Have we taken our first shot?
+
+    public float relative_position; // player's position upon on_screen entry! Compare to "2 Units of Movement"
 
     public Grub(Animation left, Animation right,
         Animation deadLeft, Animation deadRight)
@@ -24,7 +26,6 @@ public class Grub extends Creature {
         on_screen = false;
         wait_time = 0;
     }
-
 
 
     public boolean isOnScreen(){return on_screen;}
