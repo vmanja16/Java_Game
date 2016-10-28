@@ -156,21 +156,22 @@ public class GameManager extends GameCore {
         }
 
     }
-
+// FIRE RATE BASED ON PRESSSING!
+    /**
+        Creates a PlayerBullet based on player direction: Adds it to the map.
+    */
     private void createPlayerBullet(Player player){
         PlayerBullet bullet = (PlayerBullet)resourceManager.playerBulletSprite.clone();
         float pos_x = player.getX();
-        if (player.dir){
-            bullet.setX(pos_x+3*MOVEMENT_UNIT); bullet.flipMaxSpeed();
-        }
-        else{
-            bullet.setX(pos_x-3*MOVEMENT_UNIT);
-        }
+        if (player.dir){bullet.setX(pos_x+3*MOVEMENT_UNIT); bullet.flipMaxSpeed();} // initialize and move right
+        else{bullet.setX(pos_x-3*MOVEMENT_UNIT);} // initilialize and move left
         bullet.setY(player.getY());
         map.addSprite(bullet);
     }
 
-
+    /**
+        Draws the current screen.
+    */
     public void draw(Graphics2D g) {
         renderer.draw(g, map,
             screen.getWidth(), screen.getHeight());
@@ -348,8 +349,7 @@ public class GameManager extends GameCore {
         float player_pos = player.getX();
         // get the scrolling position of the map
         // based on player's position
-        int offsetX = screenWidth / 2 -
-            Math.round(player_pos) - TileMapRenderer.TILE_SIZE;
+        int offsetX = screenWidth / 2 - Math.round(player_pos) - TileMapRenderer.TILE_SIZE;
         offsetX = Math.min(offsetX, 0);
         offsetX = Math.max(offsetX, screenWidth - mapWidth);
         int x_r = screenWidth - offsetX;
