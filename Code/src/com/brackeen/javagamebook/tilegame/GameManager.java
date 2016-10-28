@@ -344,11 +344,8 @@ public class GameManager extends GameCore {
         
         // set first_shot
         grub.first_shot = grub.allow_shooting;
-        // 
-        if ( (grub.wait_time > ONE_SECOND/2)){
-            map.setScore(map.getScore()+1); 
-            grub.allow_shooting = true;
-        }
+        // check wait_time
+        if ( (grub.wait_time > ONE_SECOND/2)){grub.allow_shooting = true;}
         else{grub.allow_shooting = false;}
         
         if (grub.allow_shooting){
