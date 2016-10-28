@@ -2,7 +2,7 @@ package com.brackeen.javagamebook.tilegame;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
-import java.util.Iterator;
+import java.util.*;
 
 import javax.sound.midi.Sequence;
 import javax.sound.midi.Sequencer;
@@ -36,6 +36,9 @@ public class GameManager extends GameCore {
 
 	public static final float ONE_SECOND = 1000;
 
+    public static final float GRUB_SHOOTING_PERIOD = 3000;
+
+    public static final long COLLISION_LONG = -1;
     private Point pointCache = new Point();
     private TileMap map;
     private MidiPlayer midiPlayer;
@@ -284,6 +287,7 @@ public class GameManager extends GameCore {
         player.update(elapsedTime);
 		updateHealth(elapsedTime);
         // update other sprites
+        ArrayList<GrubBullet> bulletQueue = new ArrayList<GrubBullet>();
         Iterator i = map.getSprites();
         while (i.hasNext()) {
             Sprite sprite = (Sprite)i.next();
@@ -295,49 +299,78 @@ public class GameManager extends GameCore {
                 else {
                     updateCreature(creature, elapsedTime);
                     if (creature instanceof Grub){
-                        makeGrubBullet(creature);
+                        bulletQueue.add(makeGrubBullet(creature, elapsedTime));                        
                     }
                 }
             }
             // normal update
             sprite.update(elapsedTime);
         }
+        for (GrubBullet bullet : bulletQueue){
+            if (bullet != null){map.addSprite(bullet);}
+        }
     }
    /**
        Make GrubBullet if applicable
    */
-    private void makeGrubBullet(Creature creature){
+    private GrubBullet makeGrubBullet(Creature creature, long elapsedTime){
         int mapWidth = TileMapRenderer.tilesToPixels(map.getWidth());
         Player player = (Player) map.getPlayer();
         int screenWidth = screen.getWidth();
         Grub grub = (Grub) creature;
-        float grub_x = grub.getX();
+        GrubBullet bullet = null;
+        float grub_pos = grub.getX();
+        float player_pos = player.getX();
         // get the scrolling position of the map
         // based on player's position
         int offsetX = screenWidth / 2 -
-            Math.round(player.getX()) - TileMapRenderer.TILE_SIZE;
+            Math.round(player_pos) - TileMapRenderer.TILE_SIZE;
         offsetX = Math.min(offsetX, 0);
         offsetX = Math.max(offsetX, screenWidth - mapWidth);
-        int player_x = Math.round(player.getX()) + offsetX;        
-        int x_r = screenWidth-player_x+(int)player.getX();
-        int x_l = (int)player.getX() - player_x;
+        int player_x = Math.round(player_pos) + offsetX;        
+        int x_r = screenWidth-player_x+(int)player_pos;
+        int x_l = (int)player_pos - player_x;
         // Set grub.on_screen
-        if ((grub_x < x_r) && (grub_x > x_l)){grub.setOnScreen(true);}
+        if ((grub_pos < x_r) && (grub_pos > x_l)){grub.setOnScreen(true);}
         else{grub.setOnScreen(false);}
 
-        if (grub.isOnScreen()){map.setScore(map.getScore()+1);}
-        //if (grub.getX() > player.getX())
-        //if (grub.isOnScreen() && (grub.wait_time > ONE_SECOND/2)){
-            // Create a grubBullet!
-		// map.addSprite(grubBullet, grub's posx,posy) 
+        boolean facing_left = grub.isOnScreen() && (grub.getVelocityX() < 0)
+                         && (grub_pos > player_pos);
+        boolean facing_right = grub.isOnScreen() && (grub.getVelocityX() > 0)
+                         && (grub_pos < player_pos);
+        if (facing_left||facing_right){grub.wait_time += elapsedTime;}
+        else{grub.wait_time = 0;}
+        
+        
+        grub.first_shot = grub.allow_shooting;
+        if ( (grub.wait_time > ONE_SECOND/2)){
+            map.setScore(map.getScore()+1); 
+            grub.allow_shooting = true;
+        }
+        else{grub.allow_shooting = false;}
+        
+        if (grub.allow_shooting){
+            grub.shooting_time += elapsedTime;
+            if ((grub.shooting_time > GRUB_SHOOTING_PERIOD) || (!grub.first_shot)){
+                bullet = (GrubBullet)resourceManager.grubBulletSprite.clone();
+                bullet.setX(grub_pos-50); bullet.setY(grub.getY());
+                grub.shooting_time = 0;
+            }
+        }
+        else{grub.shooting_time = 0;}
+
+        return bullet; 
     }
    /**
 	   Updates the health
    */
     private void updateHealth(long elapsedTime){
         Player player = (Player)(map.getPlayer());
-	    
-		if (player.isAlive()){
+	    if (elapsedTime == COLLISION_LONG){
+            if (map.getHealth() < 5){map.setHealth(0);}
+            else{map.setHealth(map.getHealth()-5);}
+        }
+		else if (player.isAlive()){
             float x_pos = player.getX();
 	        float pos_diff = Math.abs(x_pos-player.ref_pos);
 			// update stall_time
@@ -449,8 +482,20 @@ public class GameManager extends GameCore {
         }
         else if (collisionSprite instanceof Creature) {
         	// player dies!
-        	player.setState(Creature.STATE_DYING);
-			updateHealth(0);
+            if (collisionSprite instanceof GrubBullet){
+                updateHealth(COLLISION_LONG);
+                player.stall_time = 0; // dont want to imm gain 5 hp
+                ((Creature)collisionSprite).setState(Creature.STATE_DEAD);
+                if (map.getHealth()==0 ){
+                    player.setState(Creature.STATE_DYING);
+                    updateHealth(0);
+                }
+
+            }
+        	if (collisionSprite instanceof Grub) {
+                player.setState(Creature.STATE_DYING);
+			    updateHealth(0);
+            }
         }
     }
 

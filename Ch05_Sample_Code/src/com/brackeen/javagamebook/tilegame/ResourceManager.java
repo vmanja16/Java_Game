@@ -28,7 +28,7 @@ public class ResourceManager {
     private Sprite goalSprite;
     private Sprite grubSprite;
     private Sprite flySprite;
-    private Sprite grubBulletSprite;
+    public Sprite grubBulletSprite;
 
     /**
         Creates a new ResourceManager with the specified

@@ -140,5 +140,11 @@ public class TileMap {
     public Iterator getSprites() {
         return sprites.iterator();
     }
-
+    /**
+        Gets an Iterator of all the Sprites in this map,
+        excluding the player Sprite.
+    */
+    public Sprite[] getSpriteArray() {
+        return (Sprite[]) sprites.toArray(new Sprite[sprites.size()]);
+    }
 }

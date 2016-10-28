@@ -9,9 +9,13 @@ public class Grub extends Creature {
 
     private boolean on_screen;
 
-    public float shot_time;
+    public boolean allow_shooting;
+
+    public float shooting_time;
 
   	public float wait_time;
+
+    public boolean first_shot;
 
     public Grub(Animation left, Animation right,
         Animation deadLeft, Animation deadRight)
@@ -30,7 +34,7 @@ public class Grub extends Creature {
     }
 
     public float getMaxSpeed() {
-        return 0.05f;
+        return 0.03f;
     }
 
 }

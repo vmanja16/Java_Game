@@ -137,9 +137,11 @@ public class TileMapRenderer {
         g.drawString("Score: " + map.getScore().toString(), 600, 50);
 
         // draw sprites
-        Iterator i = map.getSprites();
-        while (i.hasNext()) {
-            Sprite sprite = (Sprite)i.next();
+        //Iterator i = map.getSprites();
+        //while (i.hasNext()) {
+        Sprite[] spriteArray = map.getSpriteArray();
+        for (Sprite sprite : spriteArray){ 
+            //Sprite sprite = (Sprite)i.next();
             int x = Math.round(sprite.getX()) + offsetX;
             int y = Math.round(sprite.getY()) + offsetY;
             g.drawImage(sprite.getImage(), x, y, null);
