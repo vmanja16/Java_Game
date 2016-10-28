@@ -307,11 +307,29 @@ public class GameManager extends GameCore {
        Make GrubBullet if applicable
    */
     private void makeGrubBullet(Creature creature){
+        int mapWidth = TileMapRenderer.tilesToPixels(map.getWidth());
         Player player = (Player) map.getPlayer();
+        int screenWidth = screen.getWidth();
         Grub grub = (Grub) creature;
-        if (grub.isOnScreen() && (grub.wait_time > ONE_SECOND/2)){
+        float grub_x = grub.getX();
+        // get the scrolling position of the map
+        // based on player's position
+        int offsetX = screenWidth / 2 -
+            Math.round(player.getX()) - TileMapRenderer.TILE_SIZE;
+        offsetX = Math.min(offsetX, 0);
+        offsetX = Math.max(offsetX, screenWidth - mapWidth);
+        int player_x = Math.round(player.getX()) + offsetX;        
+        int x_r = screenWidth-player_x+(int)player.getX();
+        int x_l = (int)player.getX() - player_x;
+        // Set grub.on_screen
+        if ((grub_x < x_r) && (grub_x > x_l)){grub.setOnScreen(true);}
+        else{grub.setOnScreen(false);}
+
+        if (grub.isOnScreen()){map.setScore(map.getScore()+1);}
+        //if (grub.getX() > player.getX())
+        //if (grub.isOnScreen() && (grub.wait_time > ONE_SECOND/2)){
             // Create a grubBullet!
-        } 
+		// map.addSprite(grubBullet, grub's posx,posy) 
     }
    /**
 	   Updates the health
