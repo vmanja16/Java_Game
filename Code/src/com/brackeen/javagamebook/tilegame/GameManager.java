@@ -445,6 +445,10 @@ public class GameManager extends GameCore {
             ((GrubBullet)creature).distance += Math.abs(move);
             if (((GrubBullet) creature).distance > BULLET_RANGE){creature.setState(Creature.STATE_DEAD);}
         }
+        else if (creature instanceof PlayerBullet){
+            ((PlayerBullet)creature).distance += Math.abs(move);
+            if (((PlayerBullet) creature).distance > BULLET_RANGE){creature.setState(Creature.STATE_DEAD);}
+        }
 
 
         Point tile =
@@ -466,7 +470,7 @@ public class GameManager extends GameCore {
             creature.collideHorizontal();
         }
         if (creature instanceof Player) {
-            checkPlayerCollision((Player)creature, false);
+            checkPlayerCollision((Player)creature);
         }
 
         // change y
@@ -491,21 +495,31 @@ public class GameManager extends GameCore {
             creature.collideVertical();
         }
         if (creature instanceof Player) {
-            boolean canKill = (oldY < creature.getY());
-            checkPlayerCollision((Player)creature, canKill);
+            checkPlayerCollision((Player)creature);
+        }
+        if (creature instanceof PlayerBullet){
+            checkPlayerBulletCollision((PlayerBullet)creature);
         }
 
 
     }
-
+    /**
+        Checks for PlayerBullet collision with other Sprites.
+    */
+    public void checkPlayerBulletCollision(PlayerBullet bullet){
+        Sprite collisionSprite = getSpriteCollision(bullet);
+        if (collisionSprite instanceof Grub){
+            ((Creature)collisionSprite).setState(Creature.STATE_DYING);
+            // MAKE A SOUND!
+        }
+    }
 
     /**
         Checks for Player collision with other Sprites. If
         canKill is true, collisions with Creatures will kill
         them.
     */
-    public void checkPlayerCollision(Player player,
-        boolean canKill)
+    public void checkPlayerCollision(Player player)
     {
         if (!player.isAlive()) {
             return;
