@@ -9,6 +9,8 @@ public class GrubBullet extends Creature {
 
 	private float max_speed;
 
+	public float distance;
+
     public GrubBullet(Animation left, Animation right,
         Animation deadLeft, Animation deadRight)
     {

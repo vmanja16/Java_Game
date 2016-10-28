@@ -40,6 +40,8 @@ public class GameManager extends GameCore {
 
     public static final float MOVEMENT_UNIT = 50;
 
+    public static final float BULLET_RANGE = 10 * MOVEMENT_UNIT;
+
     public static final long COLLISION_LONG = -1;
     private Point pointCache = new Point();
     private TileMap map;
@@ -410,10 +412,20 @@ public class GameManager extends GameCore {
                 GRAVITY * elapsedTime);
         }
 
+
         // change x
         float dx = creature.getVelocityX();
         float oldX = creature.getX();
-        float newX = oldX + dx * elapsedTime;
+        float move = dx * elapsedTime;
+        float newX = oldX + move;
+
+        if (creature instanceof GrubBullet){
+            ((GrubBullet)creature).distance += Math.abs(move);
+            if (((GrubBullet) creature).distance > BULLET_RANGE){creature.setState(Creature.STATE_DEAD);}
+        }
+
+
+
         Point tile =
             getTileCollision(creature, newX, creature.getY());
         if (tile == null) {
@@ -461,6 +473,7 @@ public class GameManager extends GameCore {
             boolean canKill = (oldY < creature.getY());
             checkPlayerCollision((Player)creature, canKill);
         }
+
 
     }
 
