@@ -146,7 +146,7 @@ public class GameManager extends GameCore {
             }
             if (shoot.isPressed()){
                 shooting_time += elapsedTime;
-                if (shooting_time > GRUB_SHOOTING_PERIOD/2){
+                if (shooting_time > ONE_SECOND){
                     createPlayerBullet(player);
                     shooting_time = 0;
                 }
@@ -509,7 +509,7 @@ public class GameManager extends GameCore {
     public void checkPlayerBulletCollision(PlayerBullet bullet){
         Sprite collisionSprite = getSpriteCollision(bullet);
         if (collisionSprite instanceof Grub){
-            ((Creature)collisionSprite).setState(Creature.STATE_DYING);
+            ((Creature)collisionSprite).setState(Creature.STATE_DYING); ((Creature)bullet).setState(Creature.STATE_DEAD);map.setScore(map.getScore() + 5);
             // MAKE A SOUND!
         }
     }

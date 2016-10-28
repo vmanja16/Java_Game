@@ -33,6 +33,10 @@ public class PlayerBullet extends Creature {
         return max_speed;
     }
 
+    public void setMaxSpeed(float speed){
+        max_speed = speed;
+    }
+
     public boolean isFlying() {
         return isAlive();
     }

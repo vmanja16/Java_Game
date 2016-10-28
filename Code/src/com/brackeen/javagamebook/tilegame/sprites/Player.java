@@ -72,7 +72,7 @@ public class Player extends Creature {
 
 
     public float getMaxSpeed() {
-        return 0.5f;
+        return 0.4f;
     }
 
 }
