@@ -156,7 +156,7 @@ public class GameManager extends GameCore {
         }
 
     }
-// TODO: ADJUST FIRE RATE BASED ON PRESSSING; ADD MUSIC;
+// FIRE RATE BASED ON PRESSSING!
     /**
         Creates a PlayerBullet based on player direction: Adds it to the map.
     */
@@ -339,7 +339,6 @@ public class GameManager extends GameCore {
    /**
        Make GrubBullet if applicable
    */
-       // TODO: SET allow_shooting based on wait_time OR relative_position; Add music where needed;
     private GrubBullet makeGrubBullet(Creature creature, long elapsedTime){
         int mapWidth = TileMapRenderer.tilesToPixels(map.getWidth());
         Player player = (Player) map.getPlayer();
