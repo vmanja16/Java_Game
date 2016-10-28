@@ -18,8 +18,8 @@ import com.brackeen.javagamebook.tilegame.sprites.*;
     GameManager manages all parts of the game.
 */
 
-// TODO: Make a class for creature bullets
-    //If in same frame: shoot after a second 
+// TODO: After 2 units of movement: grub shoots
+    //   Shoot when pressing S, give it a sound
 public class GameManager extends GameCore {
 
     public static void main(String[] args) {
@@ -38,7 +38,7 @@ public class GameManager extends GameCore {
 
     public static final float GRUB_SHOOTING_PERIOD = 3000;
 
-    public static final float MOVEMENT_UNIT = 50;
+    public static final float MOVEMENT_UNIT = 64;
 
     public static final float BULLET_RANGE = 10 * MOVEMENT_UNIT;
 
@@ -57,7 +57,10 @@ public class GameManager extends GameCore {
     private GameAction moveRight;
     private GameAction jump;
     private GameAction exit;
+    
+    // NEW VARIABLES!
     private GameAction shoot;
+    public long shooting_time;
 
     public void init() {
         super.init();
@@ -122,7 +125,7 @@ public class GameManager extends GameCore {
         inputManager.mapToKey(shoot, KeyEvent.VK_S);
 	}
 
-
+    
     private void checkInput(long elapsedTime) {
 
         if (exit.isPressed()) {
@@ -133,17 +136,38 @@ public class GameManager extends GameCore {
         if (player.isAlive()) {
             float velocityX = 0;
             if (moveLeft.isPressed()) {
-                velocityX-=player.getMaxSpeed();
+                velocityX-=player.getMaxSpeed(); player.dir = false;
             }
             if (moveRight.isPressed()) {
-                velocityX+=player.getMaxSpeed();
+                velocityX+=player.getMaxSpeed(); player.dir = true;
             }
             if (jump.isPressed()) {
                 player.jump(false);
             }
+            if (shoot.isPressed()){
+                shooting_time += elapsedTime;
+                if (shooting_time > GRUB_SHOOTING_PERIOD/2){
+                    createPlayerBullet(player);
+                    shooting_time = 0;
+                }
+            }
+            else{shooting_time = 0;}
             player.setVelocityX(velocityX);
         }
 
+    }
+
+    private void createPlayerBullet(Player player){
+        PlayerBullet bullet = (PlayerBullet)resourceManager.playerBulletSprite.clone();
+        float pos_x = player.getX();
+        if (player.dir){
+            bullet.setX(pos_x+3*MOVEMENT_UNIT); bullet.flipMaxSpeed();
+        }
+        else{
+            bullet.setX(pos_x-3*MOVEMENT_UNIT);
+        }
+        bullet.setY(player.getY());
+        map.addSprite(bullet);
     }
 
 
@@ -328,9 +352,8 @@ public class GameManager extends GameCore {
             Math.round(player_pos) - TileMapRenderer.TILE_SIZE;
         offsetX = Math.min(offsetX, 0);
         offsetX = Math.max(offsetX, screenWidth - mapWidth);
-        int player_x = Math.round(player_pos) + offsetX;        
-        int x_r = screenWidth-player_x+(int)player_pos;
-        int x_l = (int)player_pos - player_x;
+        int x_r = screenWidth - offsetX;
+        int x_l = -offsetX;
         // Set grub.on_screen
         if ((grub_pos < x_r) && (grub_pos > x_l)){grub.setOnScreen(true);}
         else{grub.setOnScreen(false);}
@@ -339,8 +362,10 @@ public class GameManager extends GameCore {
                          && (grub_pos > player_pos);
         boolean facing_right = grub.isOnScreen() && (grub.getVelocityX() > 0)
                          && (grub_pos < player_pos);
-        if (facing_left||facing_right){grub.wait_time += elapsedTime;}
-        else{grub.wait_time = 0;}
+        if (facing_left||facing_right){grub.wait_time += elapsedTime;
+            if ( Math.abs(player_pos - grub.relative_position) > 2 *MOVEMENT_UNIT){}
+        }
+        else{grub.wait_time = 0; grub.relative_position = player_pos;}
         
         // set first_shot
         grub.first_shot = grub.allow_shooting;
@@ -420,7 +445,6 @@ public class GameManager extends GameCore {
             ((GrubBullet)creature).distance += Math.abs(move);
             if (((GrubBullet) creature).distance > BULLET_RANGE){creature.setState(Creature.STATE_DEAD);}
         }
-
 
 
         Point tile =

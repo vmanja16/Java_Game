@@ -16,6 +16,8 @@ public class Player extends Creature {
     public float old_pos;
 
 	public float stall_time;
+
+    public boolean dir; // 0: facing left!; 1: facing right!
 	
  
     public Player(Animation left, Animation right,
@@ -25,6 +27,7 @@ public class Player extends Creature {
 		old_pos = getX();
         ref_pos = getX();
 		stall_time = 0;
+        dir = true;
     }
 
 

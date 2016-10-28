@@ -29,6 +29,7 @@ public class ResourceManager {
     private Sprite grubSprite;
     private Sprite flySprite;
     public Sprite grubBulletSprite;
+    public Sprite playerBulletSprite;
 
     /**
         Creates a new ResourceManager with the specified
@@ -242,6 +243,7 @@ public class ResourceManager {
             loadImage("grub1.png"),
             loadImage("grub2.png"),
             loadImage("grub_bullet.png"),
+            loadImage("player_bullet.png"),
         };
 
         images[1] = new Image[images[0].length];
@@ -261,6 +263,7 @@ public class ResourceManager {
         Animation[] flyAnim = new Animation[4];
         Animation[] grubAnim = new Animation[4];
         Animation[] grubBulletAnim = new Animation[4];
+        Animation[] playerBulletAnim = new Animation[4];
         for (int i=0; i<4; i++) {
             playerAnim[i] = createPlayerAnim(
                 images[i][0], images[i][1], images[i][2]);
@@ -270,6 +273,8 @@ public class ResourceManager {
                 images[i][6], images[i][7]);
             grubBulletAnim[i] = createGrubBulletAnim(
                 images[i][8], images[i][8]);
+            playerBulletAnim[i] = createPlayerBulletAnim(
+                images[i][9], images[i][9]);
         }
 
         // create creature sprites
@@ -282,6 +287,9 @@ public class ResourceManager {
         grubBulletSprite = new GrubBullet(grubBulletAnim[0],
             grubBulletAnim[1], grubBulletAnim[2], 
             grubBulletAnim[3]);
+        playerBulletSprite = new PlayerBullet(playerBulletAnim[0],
+            playerBulletAnim[1], playerBulletAnim[2], 
+            playerBulletAnim[3]);
     }
 
 
@@ -324,6 +332,14 @@ public class ResourceManager {
         anim.addFrame(img2, 250);
         return anim;
     }
+
+    private Animation createPlayerBulletAnim(Image img1, Image img2) {
+        Animation anim = new Animation();
+        anim.addFrame(img1, 250);
+        anim.addFrame(img2, 250);
+        return anim;
+    }
+
 
 
     private void loadPowerUpSprites() {
